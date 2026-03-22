@@ -2,7 +2,6 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useGameStore } from "@/store/gameStore";
-import { cn } from "@/lib/utils";
 
 export function ChatPanel() {
   const { chatMessages, chatOpen, toggleChat, markChatRead } = useGameStore();

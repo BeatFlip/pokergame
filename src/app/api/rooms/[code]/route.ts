@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdmin, validateSessionToken } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { generateUUID, mapDbPlayer, mapDbRoom } from "@/lib/utils";
 import { isValidNorwegianPhone } from "@/lib/vipps";
 import type { JoinRoomRequest } from "@/types";

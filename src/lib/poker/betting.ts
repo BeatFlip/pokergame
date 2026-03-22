@@ -65,7 +65,7 @@ export function isBettingRoundComplete(
     currentBet: number;
     actionTaken: string | null;
   }>,
-  lastAggressorId: number | null
+  _lastAggressorId: number | null
 ): boolean {
   const activePlayers = playerHands.filter((p) => !p.isFolded && !p.isAllIn);
 

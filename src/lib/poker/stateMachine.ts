@@ -1,7 +1,7 @@
 import type { Card, GamePhase } from "@/types";
 import { createDeck, shuffleDeck, drawCards, generateDeckSeed } from "./deck";
 import { isBettingRoundComplete } from "./betting";
-import { determineWinners } from "./evaluator";
+import { determineWinners, bestHandFrom7 } from "./evaluator";
 
 export interface DealResult {
   playerHands: Array<{ playerId: number; cards: Card[] }>;
@@ -196,7 +196,7 @@ export function resolveShowdown(
   // Evaluate all active hands
   const evaluated = activePlayers.map((ph) => ({
     playerId: ph.playerId,
-    hand: require("./evaluator").bestHandFrom7([
+    hand: bestHandFrom7([
       ...ph.holeCards,
       ...communityCards,
     ]),
@@ -231,10 +231,6 @@ export function resolveShowdown(
     for (const contestant of sortedByInvestment) {
       const level = contestant.totalInvested;
       if (level <= previousLevel) continue;
-
-      const eligibleCount = activePlayers.filter(
-        (p) => p.totalInvested >= level
-      ).length;
 
       const potContributed = Math.min(
         remaining,

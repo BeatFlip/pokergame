@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { PlayerRegistration } from "@/components/lobby/PlayerRegistration";
-import { RoomLobby } from "@/components/lobby/RoomLobby";
 
 interface RoomPageProps {
   params: { code: string };

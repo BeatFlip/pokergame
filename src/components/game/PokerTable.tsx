@@ -26,7 +26,7 @@ interface PokerTableProps {
   roomCode: string;
 }
 
-export function PokerTable({ roomCode }: PokerTableProps) {
+export function PokerTable({ roomCode: _roomCode }: PokerTableProps) {
   const {
     players,
     gameState,
@@ -34,7 +34,6 @@ export function PokerTable({ roomCode }: PokerTableProps) {
     myHand,
     playerHands,
     room,
-    chatOpen,
     unreadCount,
     toggleChat,
   } = useGameStore();

@@ -69,7 +69,6 @@ export async function POST(req: NextRequest) {
     const action = body.action as BettingAction;
     const maxBet = Math.max(...allHands.map((h) => h.current_bet));
     const bigBlind = gameState.big_blind;
-    const settings = (player as any).rooms.settings ?? {};
 
     // Validate the action
     const validation = validateBetAction(
@@ -167,11 +166,9 @@ export async function POST(req: NextRequest) {
       .eq("id", player.id);
 
     // Update pot
-    const potAddition =
-      newCurrentBet - myHand.current_bet - (myHand.action_taken ? 0 : 0);
     const actualAdded = newTotalInvested - myHand.total_invested;
 
-    const { main: currentMain } = gameState.pot as { main: number; side_pots: any[] };
+    const { main: currentMain } = gameState.pot as { main: number; side_pots: unknown[] };
     await supabase
       .from("game_state")
       .update({
@@ -193,7 +190,7 @@ export async function POST(req: NextRequest) {
     // Get all room players for turn order
     const { data: roomPlayers } = await supabase
       .from("players")
-      .select("id, seat_position, status")
+      .select("id, seat_position, status, chip_count")
       .eq("room_id", player.room_id)
       .neq("status", "left");
 
@@ -280,11 +277,28 @@ export async function POST(req: NextRequest) {
   }
 }
 
+type ShowdownGameState = {
+  id: number;
+  room_id: number;
+  pot: { main: number };
+  community_cards: import("@/types").Card[];
+  dealer_position: number;
+  round_number: number;
+};
+type ShowdownPlayerHand = {
+  player_id: number;
+  cards: import("@/types").Card[];
+  is_folded: boolean;
+  is_all_in: boolean;
+  total_invested: number;
+};
+type ShowdownRoomPlayer = { id: number; chip_count: number };
+
 async function handleShowdown(
   supabase: ReturnType<typeof getSupabaseAdmin>,
-  gameState: any,
-  playerHands: any[],
-  roomPlayers: any[]
+  gameState: ShowdownGameState,
+  playerHands: ShowdownPlayerHand[],
+  roomPlayers: ShowdownRoomPlayer[]
 ) {
   const activePlayers = roomPlayers.map((p) => ({
     id: p.id,
@@ -301,9 +315,7 @@ async function handleShowdown(
       totalInvested: h.total_invested,
     }));
 
-  const { main: potTotal } = gameState.pot as { main: number };
-
-  const { bestHandFrom7 } = await import("@/lib/poker/evaluator");
+  const potTotal = gameState.pot.main;
 
   const result = resolveShowdown(
     activePlayers,

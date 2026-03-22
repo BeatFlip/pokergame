@@ -19,7 +19,6 @@ export function useGameState(roomId: number, roomCode: string) {
 
   const {
     setGameState,
-    updateGameState,
     setPlayers,
     updatePlayer,
     updatePlayerHand,
@@ -82,7 +81,6 @@ export function useGameState(roomId: number, roomCode: string) {
             const db = payload.new as unknown as DbPlayer;
             updatePlayer(mapDbPlayer(db));
           } else if (payload.eventType === "INSERT") {
-            const db = payload.new as unknown as DbPlayer;
             // Re-fetch full players list for new joins
             supabase
               .from("players")

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { VippsButton } from "./VippsButton";
 import { formatChips, formatChipDelta } from "@/lib/utils";
@@ -11,8 +11,8 @@ interface SettlementScreenProps {
   roomCode: string;
 }
 
-export function SettlementScreen({ roomCode }: SettlementScreenProps) {
-  const { players, room, myPlayer } = useGameStore();
+export function SettlementScreen({ roomCode: _roomCode }: SettlementScreenProps) {
+  const { myPlayer } = useGameStore();
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState<
     Array<Transaction & { vippsUrl: string }>
@@ -83,8 +83,6 @@ export function SettlementScreen({ roomCode }: SettlementScreenProps) {
       </div>
     );
   }
-
-  const startingChips = room?.settings.startingChips ?? 1000;
 
   return (
     <div className="min-h-screen bg-felt-dark px-4 pt-safe-top pb-safe-bottom">

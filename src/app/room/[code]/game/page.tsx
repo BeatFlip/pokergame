@@ -52,7 +52,7 @@ export default function GamePage({ params }: GamePageProps) {
         const playerId = localStorage.getItem("player_id");
         if (playerId) {
           const me = (data.players ?? []).find(
-            (p: any) => p.id === Number(playerId)
+            (p: { id: number }) => p.id === Number(playerId)
           );
           if (me) setMyPlayer(mapDbPlayer(me));
         }

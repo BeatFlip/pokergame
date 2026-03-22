@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdmin, validateSessionToken } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { dealHand } from "@/lib/poker/stateMachine";
 
 export async function POST(req: NextRequest) {
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Only host can start the game" }, { status: 403 });
     }
 
-    const room = (player as any).rooms;
+    const room = (player as unknown as { rooms: { code: string; settings?: Record<string, number>; status: string } }).rooms;
     if (room.status === "finished") {
       return NextResponse.json({ error: "Game has ended" }, { status: 410 });
     }

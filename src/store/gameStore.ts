@@ -13,7 +13,7 @@ import type {
   WinnerInfo,
 } from "@/types";
 
-export const useGameStore = create<GameStore>((set, get) => ({
+export const useGameStore = create<GameStore>((set, _get) => ({
   // ── Initial State ─────────────────────────────────────────
   room: null,
   players: [],

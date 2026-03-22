@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const room = (player as any).rooms;
+    const room = (player as unknown as { rooms: { settings?: Record<string, number>; status: string } }).rooms;
     const startingChips = room.settings?.starting_chips ?? 1000;
 
     // Get all players (including those who left)

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { generateRoomCode } from "@/lib/roomCode";
-import { generateUUID, mapDbRoom } from "@/lib/utils";
+import { mapDbRoom } from "@/lib/utils";
 import type { CreateRoomRequest } from "@/types";
 
 export async function POST(req: NextRequest) {

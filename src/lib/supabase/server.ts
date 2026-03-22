@@ -30,7 +30,7 @@ export async function validateSessionToken(
 ) {
   const supabase = getSupabaseAdmin();
 
-  let query = supabase
+  const query = supabase
     .from("players")
     .select("*, rooms!inner(code)")
     .eq("session_token", sessionToken)
@@ -40,7 +40,7 @@ export async function validateSessionToken(
   const { data, error } = await query;
 
   if (error || !data) return null;
-  if (roomCode && (data as any).rooms.code !== roomCode) return null;
+  if (roomCode && (data as unknown as { rooms: { code: string } }).rooms.code !== roomCode) return null;
 
   return data;
 }
