@@ -10,7 +10,8 @@ import { useGameStore } from "@/store/gameStore";
 import { useGameState } from "@/hooks/useGameState";
 import { usePlayerState } from "@/hooks/usePlayerState";
 import { useChatMessages } from "@/hooks/useChatMessages";
-import { mapDbPlayer, mapDbRoom, mapDbGameState } from "@/lib/utils";
+import { mapDbGameState } from "@/lib/utils";
+import type { Player } from "@/types";
 
 interface GamePageProps {
   params: { code: string };
@@ -43,8 +44,8 @@ export default function GamePage({ params }: GamePageProps) {
           return;
         }
 
-        setRoom(mapDbRoom(data.room));
-        setPlayers((data.players ?? []).map(mapDbPlayer));
+        setRoom(data.room);
+        setPlayers(data.players ?? []);
         if (data.gameState) setGameState(mapDbGameState(data.gameState));
 
         setRoomId(data.room.id);
@@ -52,9 +53,9 @@ export default function GamePage({ params }: GamePageProps) {
         const playerId = localStorage.getItem("player_id");
         if (playerId) {
           const me = (data.players ?? []).find(
-            (p: { id: number }) => p.id === Number(playerId)
+            (p: Player) => p.id === Number(playerId)
           );
-          if (me) setMyPlayer(mapDbPlayer(me));
+          if (me) setMyPlayer(me);
         }
 
         setInitializing(false);
@@ -69,8 +70,8 @@ export default function GamePage({ params }: GamePageProps) {
 
   if (initializing || !roomId) {
     return (
-      <div className="min-h-dvh bg-felt-dark flex items-center justify-center">
-        <div className="text-gray-400 animate-pulse">Loading game...</div>
+      <div className="min-h-dvh bg-bg-primary flex items-center justify-center">
+        <div className="text-text-muted animate-pulse">Loading game...</div>
       </div>
     );
   }
@@ -80,16 +81,14 @@ export default function GamePage({ params }: GamePageProps) {
   // Waiting for players / host to start
   if (!phase || phase === "waiting_for_players") {
     return (
-      <main className="min-h-dvh bg-felt-dark flex flex-col items-center justify-center px-6 pt-safe-top pb-safe-bottom">
+      <main className="min-h-dvh bg-bg-primary flex flex-col items-center justify-center px-6 pt-safe-top pb-safe-bottom">
         <div className="w-full max-w-sm">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-display font-bold text-card-white">
+            <h1 className="text-2xl font-display font-bold text-text-primary">
               {code}
             </h1>
           </div>
-          <div className="bg-surface-elevated border border-surface-overlay rounded-2xl p-5">
-            <WaitingRoom roomCode={code} />
-          </div>
+          <WaitingRoom roomCode={code} />
         </div>
         <ChatPanel />
       </main>
@@ -106,7 +105,7 @@ export default function GamePage({ params }: GamePageProps) {
     );
   }
 
-  // Active game
+  // Active game (pre_flop, flop, turn, river, showdown)
   return (
     <>
       <PokerTable roomCode={code} />

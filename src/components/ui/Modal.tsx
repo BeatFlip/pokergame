@@ -37,7 +37,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       {/* Panel */}
       <div
         className={cn(
-          "relative z-10 w-full sm:max-w-md bg-surface-DEFAULT border border-surface-overlay",
+          "relative z-10 w-full sm:max-w-md bg-bg-secondary border border-border",
           "rounded-t-2xl sm:rounded-2xl p-6",
           "animate-slide-up",
           className
@@ -46,7 +46,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
         aria-modal="true"
       >
         {title && (
-          <h2 className="text-xl font-display font-semibold text-card-white mb-4">
+          <h2 className="text-xl font-display font-semibold text-text-primary mb-4">
             {title}
           </h2>
         )}

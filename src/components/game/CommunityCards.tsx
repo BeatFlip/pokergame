@@ -35,7 +35,7 @@ export function CommunityCards({ cards, phase }: CommunityCardsProps) {
         return (
           <div
             key={i}
-            className="w-12 h-16 rounded-lg border-2 border-dashed border-white/10"
+            className="w-12 h-16 rounded-lg border-2 border-dashed border-border-subtle/30"
             aria-hidden
           />
         );

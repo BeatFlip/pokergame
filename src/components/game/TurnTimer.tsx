@@ -48,7 +48,7 @@ export function TurnTimer({
           cy="24"
           r={RADIUS}
           fill="none"
-          stroke="#374151"
+          stroke="#27272a"
           strokeWidth="3"
         />
         {/* Progress ring */}
@@ -57,7 +57,7 @@ export function TurnTimer({
           cy="24"
           r={RADIUS}
           fill="none"
-          stroke={isUrgent ? "#c0392b" : isMyTurn ? "#c9a74a" : "#235c38"}
+          stroke={isUrgent ? "#ef4444" : isMyTurn ? "#f59e0b" : "#3f3f46"}
           strokeWidth="3"
           strokeDasharray={CIRCUMFERENCE}
           strokeDashoffset={dashOffset}
@@ -69,10 +69,10 @@ export function TurnTimer({
         className={cn(
           "absolute text-xs font-mono font-bold",
           isUrgent
-            ? "text-card-red animate-pulse"
+            ? "text-accent-red animate-pulse"
             : isMyTurn
-            ? "text-chip-gold"
-            : "text-gray-400"
+            ? "text-accent-gold"
+            : "text-text-muted"
         )}
       >
         {Math.ceil(remaining)}

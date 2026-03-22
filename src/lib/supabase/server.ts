@@ -30,17 +30,23 @@ export async function validateSessionToken(
 ) {
   const supabase = getSupabaseAdmin();
 
-  const query = supabase
+  const { data, error } = await supabase
     .from("players")
-    .select("*, rooms!inner(code)")
+    .select("*")
     .eq("session_token", sessionToken)
     .neq("status", "left")
     .single();
 
-  const { data, error } = await query;
-
   if (error || !data) return null;
-  if (roomCode && (data as unknown as { rooms: { code: string } }).rooms.code !== roomCode) return null;
+
+  if (roomCode) {
+    const { data: room } = await supabase
+      .from("rooms")
+      .select("code")
+      .eq("id", data.room_id)
+      .single();
+    if (!room || room.code !== roomCode) return null;
+  }
 
   return data;
 }

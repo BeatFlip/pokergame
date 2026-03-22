@@ -109,19 +109,19 @@ export function PokerTable({ roomCode: _roomCode }: PokerTableProps) {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-felt-dark select-none">
-      {/* Felt table oval */}
+    <div className="relative w-full h-screen overflow-hidden bg-bg-primary select-none">
+      {/* Poker table oval */}
       <div
-        className="felt-table absolute inset-8 rounded-[50%] shadow-table"
+        className="poker-table absolute inset-8 rounded-[50%]"
         style={{ borderRadius: "50%" }}
       />
 
       {/* Phase indicator */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
-        <span className="text-xs font-medium bg-black/50 text-gray-300 px-3 py-1 rounded-full border border-white/10">
+        <span className="text-xs font-medium bg-bg-tertiary/80 text-text-secondary px-3 py-1 rounded-full border border-border">
           {phaseLabel[gameState?.phase ?? "waiting_for_players"] ?? ""}
           {gameState && (
-            <span className="text-gray-500 ml-2">
+            <span className="text-text-muted ml-2">
               Round {gameState.roundNumber}
             </span>
           )}
@@ -185,12 +185,14 @@ export function PokerTable({ roomCode: _roomCode }: PokerTableProps) {
       {/* Chat button */}
       <button
         onClick={toggleChat}
-        className="absolute top-4 right-4 z-30 w-10 h-10 bg-surface-elevated border border-surface-overlay rounded-full flex items-center justify-center text-gray-300 hover:bg-surface-overlay transition-colors"
+        className="absolute top-4 right-4 z-30 w-10 h-10 bg-bg-secondary border border-border rounded-full flex items-center justify-center text-text-secondary hover:bg-bg-tertiary transition-colors"
         aria-label="Open chat"
       >
-        💬
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-card-red text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-accent-red text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}

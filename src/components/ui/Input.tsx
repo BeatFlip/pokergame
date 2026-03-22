@@ -14,14 +14,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={id}
-            className="text-sm font-medium text-gray-300"
+            className="text-sm font-medium text-text-secondary"
           >
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {prefix && (
-            <span className="absolute left-3 text-gray-400 select-none font-mono">
+            <span className="absolute left-3 text-text-muted select-none font-mono">
               {prefix}
             </span>
           )}
@@ -29,21 +29,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={id}
             className={cn(
-              "w-full bg-surface-elevated border border-surface-overlay rounded-xl",
-              "text-card-white placeholder:text-gray-500",
+              "w-full bg-bg-secondary border border-border rounded-xl",
+              "text-text-primary placeholder:text-text-muted",
               "py-3 px-4 text-base",
-              "focus:outline-none focus:ring-2 focus:ring-chip-gold focus:border-transparent",
+              "focus:outline-none focus:ring-2 focus:ring-accent-gold focus:border-transparent",
               "transition-all duration-150",
               "min-h-[48px]",
               prefix && "pl-10",
-              error && "border-card-red focus:ring-card-red",
+              error && "border-accent-red focus:ring-accent-red",
               className
             )}
             {...props}
           />
         </div>
         {error && (
-          <p className="text-sm text-card-red" role="alert">
+          <p className="text-sm text-accent-red" role="alert">
             {error}
           </p>
         )}

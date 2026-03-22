@@ -40,7 +40,7 @@ export function BettingControls({
     <div
       className={cn(
         "fixed bottom-0 left-0 right-0 z-30",
-        "bg-surface-DEFAULT/95 backdrop-blur border-t border-surface-overlay",
+        "bg-bg-primary/95 backdrop-blur border-t border-border",
         "px-4 pb-safe-bottom pt-3",
         "pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
       )}
@@ -49,8 +49,8 @@ export function BettingControls({
       {showRaise && (
         <div className="mb-3 flex flex-col gap-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-400">Raise to</span>
-            <span className="font-mono text-chip-gold font-bold">
+            <span className="text-text-secondary">Raise to</span>
+            <span className="font-mono text-accent-gold font-bold">
               {formatChips(raiseAmount)}
             </span>
           </div>
@@ -61,7 +61,7 @@ export function BettingControls({
             step={Math.max(1, Math.floor((maxRaise - minRaise) / 100))}
             value={raiseAmount}
             onChange={(e) => setRaiseAmount(Number(e.target.value))}
-            className="w-full accent-chip-gold"
+            className="w-full accent-accent-gold"
           />
           <div className="flex gap-2">
             {[0.5, 0.75, 1].map((fraction) => {
@@ -74,7 +74,7 @@ export function BettingControls({
                 <button
                   key={fraction}
                   onClick={() => setRaiseAmount(amount)}
-                  className="flex-1 bg-surface-elevated border border-surface-overlay rounded-lg py-1.5 text-xs text-gray-300 hover:bg-surface-overlay transition-colors"
+                  className="flex-1 bg-bg-secondary border border-border rounded-lg py-1.5 text-xs text-text-secondary hover:bg-bg-tertiary transition-colors"
                 >
                   {label}
                 </button>
@@ -117,7 +117,7 @@ export function BettingControls({
             className="flex-1"
           >
             Call{" "}
-            <span className="font-mono ml-1 text-chip-gold">
+            <span className="font-mono ml-1 text-accent-gold">
               {formatChips(Math.min(callAmount, myChips))}
             </span>
           </Button>
@@ -155,7 +155,7 @@ export function BettingControls({
         <button
           onClick={handleAllIn}
           disabled={disabled}
-          className="w-full mt-2 text-xs text-gray-400 hover:text-card-red transition-colors py-1 disabled:opacity-40"
+          className="w-full mt-2 text-xs text-text-muted hover:text-accent-red transition-colors py-1 disabled:opacity-40"
         >
           Go All-In ({formatChips(myChips)})
         </button>

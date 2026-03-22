@@ -16,19 +16,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         className={cn(
           "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-150 touch-target select-none",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-chip-gold focus-visible:ring-offset-2 focus-visible:ring-offset-felt-dark",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary",
           "disabled:opacity-40 disabled:cursor-not-allowed active:scale-95",
           {
             // Variants
-            "bg-felt-green text-card-white border border-felt-light hover:bg-felt-light active:bg-felt-edge shadow-md":
+            "bg-bg-tertiary text-text-primary border border-border-subtle hover:bg-bg-hover shadow-md":
               variant === "primary",
-            "bg-surface-elevated text-card-white border border-surface-overlay hover:bg-surface-overlay":
+            "bg-bg-secondary text-text-primary border border-border hover:bg-bg-tertiary":
               variant === "secondary",
-            "bg-card-red text-white border border-red-700 hover:bg-red-700":
+            "bg-accent-red text-white border border-red-700 hover:bg-red-700":
               variant === "danger",
-            "bg-transparent text-card-white hover:bg-surface-elevated border border-transparent":
+            "bg-transparent text-text-primary hover:bg-bg-secondary border border-transparent":
               variant === "ghost",
-            "bg-chip-gold text-felt-dark border border-yellow-500 hover:brightness-110 font-bold shadow-glow":
+            "bg-accent-gold text-bg-primary border border-accent-gold-dark hover:brightness-110 font-bold shadow-glow":
               variant === "gold",
             // Sizes
             "text-sm px-3 py-2 min-h-[36px]": size === "sm",

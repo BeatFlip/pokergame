@@ -50,11 +50,13 @@ export function useChatMessages(roomId: number, roomCode: string) {
         async (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           const db = payload.new as DbChatMessage;
           // Fetch player name for the new message
-          const { data: player } = await supabase
-            .from("players")
-            .select("name")
-            .eq("id", db.player_id)
-            .single();
+          const { data: player } = db.player_id
+            ? await supabase
+                .from("players")
+                .select("name")
+                .eq("id", db.player_id)
+                .single()
+            : { data: null };
 
           addChatMessage(
             mapDbChatMessage({ ...db, players: player })

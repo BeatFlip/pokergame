@@ -42,7 +42,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#1a472a",
+  themeColor: "#09090b",
 };
 
 export default function RootLayout({
@@ -59,7 +59,7 @@ export default function RootLayout({
         <link rel="apple-touch-startup-image" href="/icons/icon-512.png" />
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} ${dmMono.variable} antialiased bg-felt-dark text-card-white`}
+        className={`${inter.variable} ${playfair.variable} ${dmMono.variable} antialiased bg-bg-primary text-text-primary`}
       >
         {children}
 

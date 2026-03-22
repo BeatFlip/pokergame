@@ -60,25 +60,25 @@ export function PlayerSeat({
           "relative rounded-xl px-3 py-2 border transition-all duration-200",
           "min-w-[80px] text-center",
           isCurrentTurn && !isFolded
-            ? "border-chip-gold bg-chip-gold/10 shadow-glow"
-            : "border-surface-overlay bg-surface-elevated",
-          isMe && "border-blue-400/50"
+            ? "border-accent-gold bg-accent-gold/10 shadow-glow"
+            : "border-border bg-bg-secondary",
+          isMe && "border-accent-blue/50"
         )}
       >
         {/* Dealer / blind badges */}
         <div className="absolute -top-2 left-1/2 -translate-x-1/2 flex gap-1">
           {isDealer && (
-            <span className="bg-white text-felt-dark text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+            <span className="bg-text-primary text-bg-primary text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
               D
             </span>
           )}
           {isSmallBlind && (
-            <span className="bg-blue-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+            <span className="bg-accent-blue text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
               S
             </span>
           )}
           {isBigBlind && (
-            <span className="bg-yellow-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+            <span className="bg-accent-gold text-bg-primary text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
               B
             </span>
           )}
@@ -87,25 +87,25 @@ export function PlayerSeat({
         <p
           className={cn(
             "text-xs font-medium truncate max-w-[72px]",
-            isMe ? "text-blue-300" : "text-card-white"
+            isMe ? "text-accent-blue" : "text-text-primary"
           )}
         >
           {player.name}
         </p>
-        <p className="text-xs font-mono text-chip-gold">
+        <p className="text-xs font-mono text-accent-gold">
           {formatChips(player.chipCount)}
         </p>
 
         {/* Status badges */}
         {isFolded && (
-          <span className="text-xs text-gray-500">FOLD</span>
+          <span className="text-xs text-text-muted">FOLD</span>
         )}
         {isAllIn && (
-          <span className="text-xs text-card-red font-bold">ALL IN</span>
+          <span className="text-xs text-accent-red font-bold">ALL IN</span>
         )}
         {hand?.currentBet != null && hand.currentBet > 0 && !isFolded && (
           <div className="absolute -bottom-5 left-1/2 -translate-x-1/2">
-            <span className="text-xs font-mono bg-chip-red/80 text-white rounded-full px-2 py-0.5 whitespace-nowrap">
+            <span className="text-xs font-mono bg-accent-red/80 text-white rounded-full px-2 py-0.5 whitespace-nowrap">
               {formatChips(hand.currentBet)}
             </span>
           </div>

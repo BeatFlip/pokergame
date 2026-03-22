@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     // Validate session and get player
     const { data: player } = await supabase
       .from("players")
-      .select("*, rooms!inner(code, settings, status)")
+      .select("*")
       .eq("session_token", sessionToken)
       .neq("status", "left")
       .single();
@@ -26,8 +26,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Only host can start the game" }, { status: 403 });
     }
 
-    const room = (player as unknown as { rooms: { code: string; settings?: Record<string, number>; status: string } }).rooms;
-    if (room.status === "finished") {
+    const { data: room } = await supabase
+      .from("rooms")
+      .select("code, settings, status")
+      .eq("id", player.room_id)
+      .single();
+
+    if (!room || room.status === "finished") {
       return NextResponse.json({ error: "Game has ended" }, { status: 410 });
     }
 
@@ -61,7 +66,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Assign seat positions if not already set
+    // Assign seat positions to any unseated players
     const unseated = players.filter((p) => p.seat_position === null);
     if (unseated.length > 0) {
       const usedSeats = new Set(
@@ -72,20 +77,20 @@ export async function POST(req: NextRequest) {
         while (usedSeats.has(seat)) seat++;
         await supabase
           .from("players")
-          .update({ seat_position: seat, status: "active" })
+          .update({ seat_position: seat })
           .eq("id", p.id);
         usedSeats.add(seat);
         p.seat_position = seat;
         seat++;
       }
-    } else {
-      // Set all waiting players to active
-      await supabase
-        .from("players")
-        .update({ status: "active" })
-        .eq("room_id", player.room_id)
-        .eq("status", "waiting");
     }
+
+    // Set all waiting players to active
+    await supabase
+      .from("players")
+      .update({ status: "active" })
+      .eq("room_id", player.room_id)
+      .eq("status", "waiting");
 
     const seatedPlayers = players.map((p, i) => ({
       id: p.id,
@@ -136,27 +141,18 @@ export async function POST(req: NextRequest) {
       }))
     );
 
-    // Post blinds — deduct from SB and BB players
-    await Promise.all([
-      supabase
-        .from("players")
-        .update({
-          chip_count: supabase.rpc("decrement_chips", {
-            player_id: result.smallBlindPlayerId,
-            amount: result.smallBlindAmount,
-          }),
-        })
-        .eq("id", result.smallBlindPlayerId),
-      supabase
-        .from("players")
-        .update({
-          chip_count: supabase.rpc("decrement_chips", {
-            player_id: result.bigBlindPlayerId,
-            amount: result.bigBlindAmount,
-          }),
-        })
-        .eq("id", result.bigBlindPlayerId),
-    ]);
+    // Post blinds — deduct chips from SB and BB players
+    for (const p of seatedPlayers) {
+      let deduction = 0;
+      if (p.id === result.smallBlindPlayerId) deduction = smallBlind;
+      if (p.id === result.bigBlindPlayerId) deduction = bigBlind;
+      if (deduction > 0) {
+        await supabase
+          .from("players")
+          .update({ chip_count: p.chipCount - deduction })
+          .eq("id", p.id);
+      }
+    }
 
     // Update hand invested for blinds
     await supabase
@@ -170,19 +166,6 @@ export async function POST(req: NextRequest) {
       .update({ current_bet: bigBlind, total_invested: bigBlind })
       .eq("game_state_id", gameState.id)
       .eq("player_id", result.bigBlindPlayerId);
-
-    // Update chip counts directly
-    for (const p of seatedPlayers) {
-      let deduction = 0;
-      if (p.id === result.smallBlindPlayerId) deduction = smallBlind;
-      if (p.id === result.bigBlindPlayerId) deduction = bigBlind;
-      if (deduction > 0) {
-        await supabase
-          .from("players")
-          .update({ chip_count: p.chipCount - deduction })
-          .eq("id", p.id);
-      }
-    }
 
     return NextResponse.json({ success: true, phase: "pre_flop" });
   } catch (err) {

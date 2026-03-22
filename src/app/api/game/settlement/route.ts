@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     const { data: player } = await supabase
       .from("players")
-      .select("*, rooms!inner(settings, status)")
+      .select("*")
       .eq("session_token", sessionToken)
       .single();
 
@@ -27,8 +27,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const room = (player as unknown as { rooms: { settings?: Record<string, number>; status: string } }).rooms;
-    const startingChips = room.settings?.starting_chips ?? 1000;
+    const { data: room } = await supabase
+      .from("rooms")
+      .select("settings, status")
+      .eq("id", player.room_id)
+      .single();
+
+    const startingChips = (room?.settings as Record<string, number> | null)?.starting_chips ?? 1000;
 
     // Get all players (including those who left)
     const { data: players } = await supabase

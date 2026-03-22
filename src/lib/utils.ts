@@ -20,13 +20,21 @@ export function formatChipDelta(delta: number): string {
 // ── DB → App type mappers ────────────────────────────────────
 
 export function mapDbRoom(db: DbRoom): Room {
+  // DB stores settings in snake_case; map to camelCase for the app
+  const raw = db.settings as unknown as Record<string, unknown>;
   return {
     id: db.id,
     code: db.code,
     name: db.name,
     status: db.status,
     hostId: db.host_id,
-    settings: db.settings,
+    settings: {
+      smallBlind: (raw?.small_blind as number) ?? (raw?.smallBlind as number) ?? 10,
+      bigBlind: (raw?.big_blind as number) ?? (raw?.bigBlind as number) ?? 20,
+      startingChips: (raw?.starting_chips as number) ?? (raw?.startingChips as number) ?? 1000,
+      maxPlayers: (raw?.max_players as number) ?? (raw?.maxPlayers as number) ?? 9,
+      turnTimeoutSeconds: (raw?.turn_timeout_seconds as number) ?? (raw?.turnTimeoutSeconds as number) ?? 30,
+    },
     createdAt: db.created_at,
   };
 }
@@ -47,12 +55,23 @@ export function mapDbPlayer(db: DbPlayer): Player {
 }
 
 export function mapDbGameState(db: DbGameState): GameState {
+  // DB stores pot as {main, side_pots} (snake_case JSON)
+  const rawPot = db.pot as unknown as {
+    main: number;
+    side_pots?: Array<{ amount: number; eligible_player_ids?: number[] }>;
+  };
   return {
     id: db.id,
     roomId: db.room_id,
     phase: db.phase,
-    communityCards: db.community_cards,
-    pot: db.pot,
+    communityCards: db.community_cards ?? [],
+    pot: {
+      main: rawPot?.main ?? 0,
+      sidePots: (rawPot?.side_pots ?? []).map((sp) => ({
+        amount: sp.amount,
+        eligiblePlayerIds: sp.eligible_player_ids ?? [],
+      })),
+    },
     currentTurnPlayerId: db.current_turn_player_id,
     smallBlind: db.small_blind,
     bigBlind: db.big_blind,

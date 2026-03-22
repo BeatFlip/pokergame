@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useGameStore } from "@/store/gameStore";
-import { formatChips } from "@/lib/utils";
+import { formatChips, mapDbGameState } from "@/lib/utils";
 
 interface WaitingRoomProps {
   roomCode: string;
 }
 
 export function WaitingRoom({ roomCode }: WaitingRoomProps) {
-  const { players, myPlayer, room } = useGameStore();
+  const { players, myPlayer, room, setGameState } = useGameStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,6 +34,11 @@ export function WaitingRoom({ roomCode }: WaitingRoomProps) {
       if (!res.ok) {
         const data = await res.json();
         setError(data.error ?? "Failed to start game");
+      } else {
+        const updated = await fetch(`/api/rooms/${roomCode}`).then((r) =>
+          r.json()
+        );
+        if (updated.gameState) setGameState(mapDbGameState(updated.gameState));
       }
     } catch {
       setError("Network error");
@@ -50,19 +55,19 @@ export function WaitingRoom({ roomCode }: WaitingRoomProps) {
     <div className="flex flex-col gap-6">
       {/* Room code display */}
       <div
-        className="bg-surface-elevated border border-surface-overlay rounded-2xl p-4 text-center cursor-pointer active:scale-95 transition-transform"
+        className="bg-bg-secondary border border-border rounded-2xl p-4 text-center cursor-pointer active:scale-95 transition-transform"
         onClick={copyCode}
       >
-        <p className="text-sm text-gray-400 mb-1">Room code</p>
-        <p className="text-4xl font-mono font-bold tracking-widest text-chip-gold">
+        <p className="text-sm text-text-muted mb-1">Room code</p>
+        <p className="text-4xl font-mono font-bold tracking-widest text-accent-gold">
           {roomCode}
         </p>
-        <p className="text-xs text-gray-500 mt-1">Tap to copy</p>
+        <p className="text-xs text-text-muted mt-1">Tap to copy</p>
       </div>
 
       {/* Players list */}
       <div>
-        <p className="text-sm text-gray-400 mb-3">
+        <p className="text-sm text-text-secondary mb-3">
           Players ({activePlayers.length}/
           {room?.settings.maxPlayers ?? 9})
         </p>
@@ -70,34 +75,34 @@ export function WaitingRoom({ roomCode }: WaitingRoomProps) {
           {activePlayers.map((player) => (
             <div
               key={player.id}
-              className="flex items-center justify-between bg-surface-elevated rounded-xl px-4 py-3 border border-surface-overlay"
+              className="flex items-center justify-between bg-bg-secondary rounded-xl px-4 py-3 border border-border"
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`w-2 h-2 rounded-full ${
-                    player.isHost ? "bg-chip-gold" : "bg-felt-light"
+                    player.isHost ? "bg-accent-gold" : "bg-accent-green"
                   }`}
                 />
-                <span className="font-medium text-card-white">
+                <span className="font-medium text-text-primary">
                   {player.name}
                   {player.id === myPlayer?.id && (
-                    <span className="text-gray-400 text-sm ml-2">(you)</span>
+                    <span className="text-text-muted text-sm ml-2">(you)</span>
                   )}
                 </span>
                 {player.isHost && (
-                  <span className="text-xs text-chip-gold border border-chip-gold/30 rounded px-1.5 py-0.5">
+                  <span className="text-xs text-accent-gold border border-accent-gold/30 rounded px-1.5 py-0.5">
                     Host
                   </span>
                 )}
               </div>
-              <span className="font-mono text-sm text-gray-300">
-                {formatChips(player.chipCount)} chips
+              <span className="font-mono text-sm text-text-secondary">
+                {formatChips(player.chipCount)}
               </span>
             </div>
           ))}
 
           {activePlayers.length === 0 && (
-            <p className="text-gray-500 text-center py-4">Waiting for players...</p>
+            <p className="text-text-muted text-center py-4">Waiting for players...</p>
           )}
         </div>
       </div>
@@ -105,7 +110,7 @@ export function WaitingRoom({ roomCode }: WaitingRoomProps) {
       {/* Start game button (host only) */}
       {myPlayer?.isHost && (
         <div className="flex flex-col gap-2">
-          {error && <p className="text-card-red text-sm text-center">{error}</p>}
+          {error && <p className="text-accent-red text-sm text-center">{error}</p>}
           <Button
             variant="gold"
             size="lg"
@@ -117,13 +122,13 @@ export function WaitingRoom({ roomCode }: WaitingRoomProps) {
               ? "Starting..."
               : activePlayers.length < 2
               ? "Need at least 2 players"
-              : "Start Game"}
+              : "Deal Cards"}
           </Button>
         </div>
       )}
 
       {!myPlayer?.isHost && (
-        <p className="text-center text-gray-500 text-sm">
+        <p className="text-center text-text-muted text-sm">
           Waiting for host to start the game...
         </p>
       )}

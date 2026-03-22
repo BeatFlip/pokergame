@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     const { data: player } = await supabase
       .from("players")
-      .select("*, rooms!inner(settings)")
+      .select("*")
       .eq("session_token", sessionToken)
       .neq("status", "left")
       .single();
@@ -339,16 +339,21 @@ async function handleShowdown(
     .eq("room_id", gameState.room_id)
     .eq("status", "folded");
 
-  // Advance game state to showdown, then waiting
+  const numPlayers = roomPlayers.length;
+
+  // Reset to waiting_for_players immediately so host can deal next hand
   await supabase.from("game_state").update({
-    phase: "showdown",
+    phase: "waiting_for_players",
     current_turn_player_id: null,
-    dealer_position: (gameState.dealer_position + 1) % 9,
+    dealer_position: (gameState.dealer_position + 1) % numPlayers,
     round_number: gameState.round_number + 1,
     pot: { main: 0, side_pots: [] },
     community_cards: [],
   }).eq("id", gameState.id);
 
-  // After brief delay, reset to waiting_for_players
-  // (Client handles the showdown display timer; next deal resets phase)
+  // Clean up old player hands
+  await supabase
+    .from("player_hands")
+    .delete()
+    .eq("game_state_id", gameState.id);
 }

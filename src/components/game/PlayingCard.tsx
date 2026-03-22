@@ -26,8 +26,8 @@ export function PlayingCard({
     return (
       <div
         className={cn(
-          "rounded-lg border-2 border-gray-600 shadow-card",
-          "bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900",
+          "rounded-lg border border-border-subtle shadow-card",
+          "bg-gradient-to-br from-zinc-800 via-zinc-700 to-zinc-800",
           "flex items-center justify-center",
           sizeClasses[size],
           animateIn && "animate-card-deal",
@@ -35,7 +35,7 @@ export function PlayingCard({
         )}
         aria-label="Face-down card"
       >
-        <span className="text-blue-400/60 text-lg">🂠</span>
+        <div className="w-3/4 h-3/4 rounded border border-zinc-600 bg-card-back" />
       </div>
     );
   }
@@ -46,7 +46,7 @@ export function PlayingCard({
   return (
     <div
       className={cn(
-        "rounded-lg border border-gray-200/20 shadow-card bg-card-white",
+        "rounded-lg border border-zinc-300/20 shadow-card bg-white",
         "flex flex-col items-start justify-between p-1",
         "select-none",
         sizeClasses[size],
@@ -59,7 +59,7 @@ export function PlayingCard({
       <div
         className={cn(
           "flex flex-col items-center leading-none",
-          isRed ? "text-card-red" : "text-card-black"
+          isRed ? "text-red-600" : "text-zinc-900"
         )}
       >
         <span className="font-bold font-mono">{card.rank}</span>
@@ -70,7 +70,7 @@ export function PlayingCard({
       <div
         className={cn(
           "w-full text-center text-lg leading-none",
-          isRed ? "text-card-red" : "text-card-black"
+          isRed ? "text-red-600" : "text-zinc-900"
         )}
       >
         {symbol}
@@ -80,7 +80,7 @@ export function PlayingCard({
       <div
         className={cn(
           "flex flex-col items-center leading-none rotate-180 self-end",
-          isRed ? "text-card-red" : "text-card-black"
+          isRed ? "text-red-600" : "text-zinc-900"
         )}
       >
         <span className="font-bold font-mono">{card.rank}</span>

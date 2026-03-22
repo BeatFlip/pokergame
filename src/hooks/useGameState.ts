@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import type { RealtimeChannel, RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useGameStore } from "@/store/gameStore";
 import { mapDbGameState, mapDbPlayer } from "@/lib/utils";
@@ -13,9 +13,7 @@ import type { DbGameState, DbPlayer, DbPlayerHand } from "@/types";
  * Cleans up subscription on unmount.
  */
 export function useGameState(roomId: number, roomCode: string) {
-  const channelRef = useRef<ReturnType<
-    ReturnType<typeof getSupabaseClient>["channel"]
-  > | null>(null);
+  const channelRef = useRef<RealtimeChannel | null>(null);
 
   const {
     setGameState,
@@ -27,26 +25,31 @@ export function useGameState(roomId: number, roomCode: string) {
   useEffect(() => {
     const supabase = getSupabaseClient();
 
-    // Initial fetch
+    // Initial fetch + polling fallback
     const fetchSnapshot = async () => {
-      const [gsRes, playersRes] = await Promise.all([
-        supabase
-          .from("game_state")
-          .select(
-            "id, room_id, phase, community_cards, pot, current_turn_player_id, small_blind, big_blind, dealer_position, round_number, last_aggressor_id, updated_at"
-          )
-          .eq("room_id", roomId)
-          .order("id", { ascending: false })
-          .limit(1)
-          .single(),
-        supabase.from("players").select("*").eq("room_id", roomId),
-      ]);
+      const { data: gsData } = await supabase
+        .from("game_state")
+        .select(
+          "id, room_id, phase, community_cards, pot, current_turn_player_id, small_blind, big_blind, dealer_position, round_number, last_aggressor_id, updated_at"
+        )
+        .eq("room_id", roomId)
+        .order("id", { ascending: false })
+        .limit(1)
+        .single();
 
-      if (gsRes.data) setGameState(mapDbGameState(gsRes.data as DbGameState));
-      if (playersRes.data) setPlayers(playersRes.data.map(mapDbPlayer));
+      const { data: playersData } = await supabase
+        .from("players")
+        .select("*")
+        .eq("room_id", roomId);
+
+      if (gsData) setGameState(mapDbGameState(gsData as unknown as DbGameState));
+      if (playersData) setPlayers((playersData as unknown as DbPlayer[]).map(mapDbPlayer));
     };
 
     fetchSnapshot();
+
+    // Polling fallback — keeps lobby and game in sync if Realtime lags
+    const pollInterval = setInterval(fetchSnapshot, 3000);
 
     // Realtime channel
     const channel = supabase
@@ -138,6 +141,7 @@ export function useGameState(roomId: number, roomCode: string) {
     channelRef.current = channel;
 
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(channel);
     };
   }, [roomId, roomCode]);

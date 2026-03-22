@@ -54,21 +54,20 @@ export function SettlementScreen({ roomCode: _roomCode }: SettlementScreenProps)
 
   if (!done && myPlayer?.isHost) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-felt-dark px-6 gap-6">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-bg-primary px-6 gap-6">
         <div className="text-center">
-          <div className="text-5xl mb-4">🏆</div>
-          <h2 className="text-2xl font-display font-bold text-chip-gold mb-2">
+          <h2 className="text-2xl font-display font-bold text-accent-gold mb-2">
             End the Game
           </h2>
-          <p className="text-gray-400 text-sm">
-            This will calculate who owes who and generate Vipps payment links.
+          <p className="text-text-muted text-sm">
+            Calculate who owes who and generate Vipps payment links.
           </p>
         </div>
-        {error && <p className="text-card-red text-sm">{error}</p>}
+        {error && <p className="text-accent-red text-sm">{error}</p>}
         <button
           onClick={handleEndGame}
           disabled={loading}
-          className="w-full max-w-sm bg-chip-gold text-felt-dark font-bold py-4 rounded-2xl text-lg active:scale-95 transition-transform disabled:opacity-60"
+          className="w-full max-w-sm bg-accent-gold text-bg-primary font-bold py-4 rounded-2xl text-lg active:scale-95 transition-transform disabled:opacity-60"
         >
           {loading ? "Calculating..." : "End Game & Settle Up"}
         </button>
@@ -78,25 +77,25 @@ export function SettlementScreen({ roomCode: _roomCode }: SettlementScreenProps)
 
   if (!done) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-felt-dark">
-        <p className="text-gray-400">Waiting for host to end the game...</p>
+      <div className="flex items-center justify-center min-h-screen bg-bg-primary">
+        <p className="text-text-muted">Waiting for host to end the game...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-felt-dark px-4 pt-safe-top pb-safe-bottom">
+    <div className="min-h-screen bg-bg-primary px-4 pt-safe-top pb-safe-bottom">
       <div className="max-w-md mx-auto py-6 flex flex-col gap-6">
         <div className="text-center">
-          <div className="text-5xl mb-3">🎉</div>
-          <h1 className="text-2xl font-display font-bold text-chip-gold">
+          <h1 className="text-2xl font-display font-bold text-accent-gold">
             Game Over
           </h1>
+          <p className="text-text-muted text-sm mt-1">Final results</p>
         </div>
 
         {/* Player balances */}
-        <div className="bg-surface-elevated border border-surface-overlay rounded-2xl p-4 flex flex-col gap-3">
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+        <div className="bg-bg-secondary border border-border rounded-2xl p-4 flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide">
             Results
           </h3>
           {balances
@@ -106,14 +105,14 @@ export function SettlementScreen({ roomCode: _roomCode }: SettlementScreenProps)
                 key={b.playerId}
                 className="flex items-center justify-between"
               >
-                <span className="font-medium text-card-white">{b.playerName}</span>
+                <span className="font-medium text-text-primary">{b.playerName}</span>
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-sm text-gray-300">
-                    {formatChips(b.finalChips)} chips
+                  <span className="font-mono text-sm text-text-secondary">
+                    {formatChips(b.finalChips)}
                   </span>
                   <span
                     className={`font-mono font-bold text-sm ${
-                      b.netBalance >= 0 ? "text-green-400" : "text-card-red"
+                      b.netBalance >= 0 ? "text-accent-green" : "text-accent-red"
                     }`}
                   >
                     {formatChipDelta(b.netBalance)}
@@ -126,25 +125,25 @@ export function SettlementScreen({ roomCode: _roomCode }: SettlementScreenProps)
         {/* Transactions */}
         {transactions.length > 0 ? (
           <div className="flex flex-col gap-4">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide">
               Payments ({transactions.length} transfer
               {transactions.length > 1 ? "s" : ""})
             </h3>
             {transactions.map((t, i) => (
               <div
                 key={i}
-                className="bg-surface-elevated border border-surface-overlay rounded-2xl p-4 flex flex-col gap-3"
+                className="bg-bg-secondary border border-border rounded-2xl p-4 flex flex-col gap-3"
               >
-                <p className="text-sm text-gray-300">
-                  <span className="text-card-white font-medium">
+                <p className="text-sm text-text-secondary">
+                  <span className="text-text-primary font-medium">
                     {t.fromName}
                   </span>{" "}
                   pays{" "}
-                  <span className="text-chip-gold font-mono font-bold">
+                  <span className="text-accent-gold font-mono font-bold">
                     {formatChips(t.amount)}
                   </span>{" "}
                   to{" "}
-                  <span className="text-card-white font-medium">{t.toName}</span>
+                  <span className="text-text-primary font-medium">{t.toName}</span>
                 </p>
                 <VippsButton
                   toName={t.toName}
@@ -155,7 +154,7 @@ export function SettlementScreen({ roomCode: _roomCode }: SettlementScreenProps)
             ))}
           </div>
         ) : (
-          <div className="text-center text-gray-500 py-4">
+          <div className="text-center text-text-muted py-4">
             No payments needed — everyone is even!
           </div>
         )}

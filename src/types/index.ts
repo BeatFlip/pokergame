@@ -323,8 +323,8 @@ export interface DbGameState {
   id: number;
   room_id: number;
   phase: GamePhase;
-  community_cards: Card[];
-  pot: Pot;
+  community_cards: Card[] | null;
+  pot: { main: number; side_pots: Array<{ amount: number; eligible_player_ids?: number[] }> };
   current_turn_player_id: number | null;
   small_blind: number;
   big_blind: number;

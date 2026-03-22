@@ -44,7 +44,6 @@ export function PlayerRegistration({ roomCode }: PlayerRegistrationProps) {
         return;
       }
 
-      // Store session token in localStorage
       localStorage.setItem("session_token", data.sessionToken);
       localStorage.setItem("player_id", String(data.player.id));
       localStorage.setItem("room_code", roomCode);
@@ -72,11 +71,11 @@ export function PlayerRegistration({ roomCode }: PlayerRegistrationProps) {
       />
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="phone" className="text-sm font-medium text-gray-300">
+        <label htmlFor="phone" className="text-sm font-medium text-text-secondary">
           Phone number
         </label>
         <div className="relative flex items-center">
-          <span className="absolute left-3 text-gray-400 font-mono text-base select-none">
+          <span className="absolute left-3 text-text-muted font-mono text-base select-none">
             +47
           </span>
           <input
@@ -91,14 +90,14 @@ export function PlayerRegistration({ roomCode }: PlayerRegistrationProps) {
               setErrors((prev) => ({ ...prev, phone: undefined }));
             }}
             onKeyDown={(e) => e.key === "Enter" && handleJoin()}
-            className={`w-full bg-surface-elevated border ${
-              errors.phone ? "border-card-red" : "border-surface-overlay"
-            } rounded-xl text-card-white placeholder:text-gray-500 py-3 pl-12 pr-4 text-base focus:outline-none focus:ring-2 focus:ring-chip-gold focus:border-transparent transition-all min-h-[48px] font-mono`}
+            className={`w-full bg-bg-secondary border ${
+              errors.phone ? "border-accent-red" : "border-border"
+            } rounded-xl text-text-primary placeholder:text-text-muted py-3 pl-12 pr-4 text-base focus:outline-none focus:ring-2 focus:ring-accent-gold focus:border-transparent transition-all min-h-[48px] font-mono`}
             autoComplete="tel-local"
           />
         </div>
         {errors.phone && (
-          <p className="text-sm text-card-red" role="alert">
+          <p className="text-sm text-accent-red" role="alert">
             {errors.phone}
           </p>
         )}

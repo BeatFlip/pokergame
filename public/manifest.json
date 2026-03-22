@@ -4,8 +4,8 @@
   "description": "Texas Hold'em poker with friends",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d2818",
-  "theme_color": "#1a472a",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
   "orientation": "portrait",
   "lang": "en",
   "icons": [

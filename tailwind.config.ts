@@ -9,27 +9,40 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        felt: {
-          green: "#1a472a",
-          dark: "#0d2818",
-          edge: "#0f3320",
-          light: "#235c38",
+        // Dark professional palette
+        bg: {
+          primary: "#09090b",    // zinc-950 — main background
+          secondary: "#18181b",  // zinc-900 — cards/panels
+          tertiary: "#27272a",   // zinc-800 — elevated surfaces
+          hover: "#3f3f46",      // zinc-700 — hover states
+        },
+        border: {
+          DEFAULT: "#27272a",    // zinc-800
+          subtle: "#3f3f46",     // zinc-700
+        },
+        accent: {
+          gold: "#f59e0b",       // amber-500 — primary accent
+          "gold-light": "#fbbf24", // amber-400
+          "gold-dark": "#d97706", // amber-600
+          red: "#ef4444",        // red-500
+          green: "#22c55e",      // green-500
+          blue: "#3b82f6",       // blue-500
+        },
+        text: {
+          primary: "#fafafa",    // zinc-50
+          secondary: "#a1a1aa",  // zinc-400
+          muted: "#71717a",      // zinc-500
         },
         card: {
-          white: "#f5f0e8",
-          red: "#c0392b",
-          black: "#1a1a1a",
+          red: "#ef4444",
+          black: "#18181b",
         },
+        // Keep some legacy names for existing components
         chip: {
-          gold: "#c9a74a",
-          red: "#c0392b",
-          blue: "#2980b9",
-          white: "#ecf0f1",
-        },
-        surface: {
-          DEFAULT: "#111827",
-          elevated: "#1f2937",
-          overlay: "#374151",
+          gold: "#f59e0b",
+          red: "#ef4444",
+          blue: "#3b82f6",
+          white: "#fafafa",
         },
       },
       fontFamily: {
@@ -45,7 +58,7 @@ const config: Config = {
         "slide-up": "slideUp 0.3s ease-out",
         "slide-in-right": "slideInRight 0.3s ease-out",
         "pulse-glow": "pulseGlow 1.5s ease-in-out infinite",
-        "countdown": "countdown linear forwards",
+        countdown: "countdown linear forwards",
       },
       keyframes: {
         cardFlip: {
@@ -74,8 +87,8 @@ const config: Config = {
           "100%": { transform: "translateX(0)" },
         },
         pulseGlow: {
-          "0%, 100%": { boxShadow: "0 0 8px rgba(201, 167, 74, 0.4)" },
-          "50%": { boxShadow: "0 0 20px rgba(201, 167, 74, 0.8)" },
+          "0%, 100%": { boxShadow: "0 0 8px rgba(245, 158, 11, 0.3)" },
+          "50%": { boxShadow: "0 0 20px rgba(245, 158, 11, 0.6)" },
         },
         countdown: {
           "0%": { strokeDashoffset: "0" },
@@ -83,18 +96,15 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "felt-texture":
-          "radial-gradient(ellipse at center, #235c38 0%, #1a472a 40%, #0f3320 100%)",
         "card-back":
-          "repeating-linear-gradient(45deg, #1a1a2e, #1a1a2e 5px, #16213e 5px, #16213e 10px)",
+          "repeating-linear-gradient(45deg, #27272a, #27272a 5px, #18181b 5px, #18181b 10px)",
       },
       boxShadow: {
         card: "0 2px 8px rgba(0,0,0,0.5), 0 0 1px rgba(0,0,0,0.3)",
         "card-hover": "0 4px 16px rgba(0,0,0,0.6)",
-        chip: "0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)",
-        table: "inset 0 0 60px rgba(0,0,0,0.4)",
-        glow: "0 0 20px rgba(201, 167, 74, 0.5)",
-        "glow-red": "0 0 20px rgba(192, 57, 43, 0.5)",
+        chip: "0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+        glow: "0 0 20px rgba(245, 158, 11, 0.4)",
+        "glow-red": "0 0 20px rgba(239, 68, 68, 0.4)",
       },
     },
   },
