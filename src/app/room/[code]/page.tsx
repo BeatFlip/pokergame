@@ -1,18 +1,20 @@
 import { notFound } from "next/navigation";
 import { PlayerRegistration } from "@/components/lobby/PlayerRegistration";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 interface RoomPageProps {
   params: { code: string };
 }
 
 async function getRoom(code: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   try {
-    const res = await fetch(`${baseUrl}/api/rooms/${code.toUpperCase()}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return res.json();
+    const supabase = getSupabaseAdmin();
+    const { data: room } = await supabase
+      .from("rooms")
+      .select("id, code, name, status, settings")
+      .eq("code", code.toUpperCase())
+      .single();
+    return room ? { room } : null;
   } catch {
     return null;
   }
