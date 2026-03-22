@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useGameStore } from "@/store/gameStore";
 import { mapDbGameState, mapDbPlayer } from "@/lib/utils";
@@ -60,9 +61,9 @@ export function useGameState(roomId: number, roomCode: string) {
           table: "game_state",
           filter: `room_id=eq.${roomId}`,
         },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           if (payload.eventType === "UPDATE" || payload.eventType === "INSERT") {
-            const db = payload.new as DbGameState;
+            const db = payload.new as unknown as DbGameState;
             setGameState(mapDbGameState(db));
           }
         }
@@ -76,18 +77,18 @@ export function useGameState(roomId: number, roomCode: string) {
           table: "players",
           filter: `room_id=eq.${roomId}`,
         },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           if (payload.eventType === "UPDATE") {
-            const db = payload.new as DbPlayer;
+            const db = payload.new as unknown as DbPlayer;
             updatePlayer(mapDbPlayer(db));
           } else if (payload.eventType === "INSERT") {
-            const db = payload.new as DbPlayer;
+            const db = payload.new as unknown as DbPlayer;
             // Re-fetch full players list for new joins
             supabase
               .from("players")
               .select("*")
               .eq("room_id", roomId)
-              .then(({ data }) => {
+              .then(({ data }: { data: DbPlayer[] | null; error: unknown }) => {
                 if (data) setPlayers(data.map(mapDbPlayer));
               });
           }
@@ -101,9 +102,9 @@ export function useGameState(roomId: number, roomCode: string) {
           schema: "public",
           table: "player_hands",
         },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           if (payload.eventType === "UPDATE" || payload.eventType === "INSERT") {
-            const db = payload.new as DbPlayerHand;
+            const db = payload.new as unknown as DbPlayerHand;
             updatePlayerHand({
               playerId: db.player_id,
               id: db.id,
@@ -119,14 +120,14 @@ export function useGameState(roomId: number, roomCode: string) {
         }
       )
       // Presence: track online players
-      .on("presence", { event: "join" }, ({ key }) => {
+      .on("presence", { event: "join" }, ({ key }: { key: string }) => {
         useGameStore.getState().setPlayerOnline(key);
       })
-      .on("presence", { event: "leave" }, ({ key }) => {
+      .on("presence", { event: "leave" }, ({ key }: { key: string }) => {
         useGameStore.getState().setPlayerOffline(key);
       });
 
-    channel.subscribe((status) => {
+    channel.subscribe((status: string) => {
       if (status === "SUBSCRIBED") {
         // Track presence with session token
         const sessionToken = localStorage.getItem("session_token");

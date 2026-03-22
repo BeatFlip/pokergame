@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useGameStore } from "@/store/gameStore";
 import type { DbChatMessage, ChatMessage } from "@/types";
@@ -31,7 +32,7 @@ export function useChatMessages(roomId: number, roomCode: string) {
       .eq("room_id", roomId)
       .order("created_at", { ascending: true })
       .limit(50)
-      .then(({ data }) => {
+      .then(({ data }: { data: Array<DbChatMessage & { players?: { name: string } | null }> | null; error: unknown }) => {
         if (data) setChatMessages(data.map(mapDbChatMessage));
       });
 
@@ -46,7 +47,7 @@ export function useChatMessages(roomId: number, roomCode: string) {
           table: "chat_messages",
           filter: `room_id=eq.${roomId}`,
         },
-        async (payload) => {
+        async (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           const db = payload.new as DbChatMessage;
           // Fetch player name for the new message
           const { data: player } = await supabase
